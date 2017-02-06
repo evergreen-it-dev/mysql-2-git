@@ -1,0 +1,32 @@
+# Change Log
+All notable changes to this project will be documented in this file.
+
+## [Unreleased]
+### Add
+- server - probably IN_CLOSE_WRITE,IN_NO_LOOP needed to avoid simultaneous repository proceccing and check at the end script, if /tmp dir is not empty, start script again 
+- server - add re-generating iv algoritm on server side in db-collector.sh before retreiving next database
+- server - add feedback from db-to-repo-serv-enc-iv.sh to db-collector.sh, next database should be collected after previous had been processed
+- client - add report on failed ftp transfer
+- server - add zero-size check
+- server - size of the unpacked file, has to be added to logfile
+- server - add index.lock checking on server side and pause process for a few seconds, or track git process through ps
+- client - add DB_HOST variable  on client-side (not urgent actually)
+- server - make install script for all this shit, with doc's and samples (far future)
+- server - may be we need to have possibility to disable sending log to mail
+### Change
+- client - actually, ${TEMP_LOG} should be more used on client-side O_o
+- server - transfer ERR\SUCC to the beginning of report subject
+- server - should fix, we have a bunch of garbage if enc.file comes before otp.key because "rm  ${TEMP_LOG}"" only in mailto func
+
+## [1.1.0] - 2017-02-04
+### Added
+- client - added exit if dump size too low on client-side
+- server\client - added iv grabbing from url on client and server side 
+- client - added variables for openssl, mysqldump and ftp full path
+### Changed
+- server\client - changed ssl encrypt\decrypt algoritm for php compatibility
+- client - changed RAND generating rule on client side
+- client - changed FTP upload algoritm on client side
+
+## [1.0.0] - 2017-01-30
+- release
