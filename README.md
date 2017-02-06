@@ -1,24 +1,7 @@
-# mysql-2-git-enc
-use it with incron, for automatically adding mysql dump to git repository
+## mysql-2-git-enc
+# Инструкция по установке и настройке
 
-you need to upload two files  
-file with one-time password inside filename.otp.key, which encrypted with open rsa key  
-and file with sql dump in encrypted with OTP tar.gz archive inside filename.enc.file 
-
-you need three directory  
-tmp - for files in process of uploading  
-complete - for key files   
-repo - for repository with worktree
-
-after IN_CLOSE_WRITE event happened in tmp directory, script will start and make all magic  
-incrontab must contain something like  
-/path/to/dir/DB-repo/tmp/ IN_CLOSE_WRITE /path/to/db-to-repo.sh $#  
-where $# - sends filename to script as ${INCRON_FILE_NAME}
-
-
-h1. Инструкция по установке и настройке
-
-h2. Сервер
+## Сервер
 
 На сервере был настроен git, и FTP-сервер.
 Серверный скрипт 
@@ -26,10 +9,13 @@ h2. Сервер
 
 1. Для начала нужно создать структуру директорий на сервере
 Например
+
+```
 foo
   |- tmp
   |- complete
   |- repo
+```
 tmp - домашняя директория фтп-пользователей, сюда загружаются все файлы
 complete - недоступная для фтп-пользователей директория, куда перемещаются из tmp файлы ключей и распакованные архивы 
 repo - собственно директория локального репозитория с деревом файлов
@@ -57,6 +43,7 @@ MAIL_ADDR - почта для отправки уведомлений
 5. chmod +x db-to-repo-serv-enc-iv.sh и готово.
 
 6. Если вы хотите централизовано собирать бэкапа клиентских баз данных, создайте скрипт  db-collector.sh, который по очереди вызывает скрипты на клиентских серверах, пример файла: 
+```
 #!/bin/bash
 echo "Project1"
 sshpass -p 'superpass'  ssh -p 3389  user@google.com '/path/to/script/db-to-repo-client-enc.sh'
@@ -71,8 +58,9 @@ echo "Project3 via php script"
 wget  -qO --no-check-certificate https://site.us/dmpr/index.php?key=secretpass &>/dev/null
 sleep 60
 ....
+```
 
-h2. Клиент
+## Клиент
 
 На клиентском сервере нужно сделать дамп базы, зашифровать openssl и отправить на ftp, соответственно на клиентской стороне должны быть инструменты для этого, чтобы клиентский скрипт выполнялся.
 Для хостингов без ssh-доступа мы разработали php-вариант скрипта, выложим позже.
@@ -108,10 +96,10 @@ DB_PASS
 Как писалось выше, для хостингов без ssh мы разработали php-скрипт бекапа совместимого с серверным скриптом - выложим в следующей части статьи.
 
 
-h2. Пример лога добавления файла
+## Пример лога добавления файла
 если добавление прошло с ошибкой, то соответствующий пункт будет ERROR а не SUCCESS
-###################################
 
+```
 30-11-2016 aXKbCRW5siSFS5aYqK.enc.file has arrived
 removing 6+ hours old uploaded files in /foo/tmp/, listed below
 Wed Nov 30 12:25:46 EET 2016 SUCCESS
@@ -158,11 +146,11 @@ Wed Nov 30 12:25:47 EET 2016 SUCCESS
 ------------------------------
 Wed Nov 30 12:25:47 EET 2016 adding sitename-mysql-dbname-prod.sql to user@domain.com:reponame.git SUCCESS
 ------------------------------
+```
 
+## Пример лога уведомления о постороннем файле (взят общий лог сервера)
 
-h2. Пример лога уведомления о постороннем файле (взят общий лог сервера)
-###################################
-
+```
 02-12-2016 1j23hk1jh3o.jpg has arrived
 removing 6+ hours old uploaded files in /foo/tmp/, listed below
 Fri Dec  2 16:26:14 EET 2016 SUCCESS
@@ -176,3 +164,23 @@ Fri Dec 02 15:53:48 2016 0 ::ffff:95.67.95.254 23962  /some/dir/here/checklist_p
 Fri Dec 02 16:11:07 2016 0 ::ffff:95.67.95.254 38908  /some/dir/here/concept/design-6.png b _ i r user ftp 0 * c
 Fri Dec 02 16:12:21 2016 0 ::ffff:95.67.95.254 14017  /some/dir/here/stats_cover.png b _ i r user ftp 0 * c
 Fri Dec 02 16:26:14 2016 0 ::ffff:46.219.221.132 99470 /foo/tmp/1j23hk1jh3o.jpg b _ i r user ftp 0 * c
+```
+
+##Previos instruction
+
+use it with incron, for automatically adding mysql dump to git repository
+
+you need to upload two files  
+file with one-time password inside filename.otp.key, which encrypted with open rsa key  
+and file with sql dump in encrypted with OTP tar.gz archive inside filename.enc.file 
+
+you need three directory  
+tmp - for files in process of uploading  
+complete - for key files   
+repo - for repository with worktree
+
+after IN_CLOSE_WRITE event happened in tmp directory, script will start and make all magic  
+incrontab must contain something like  
+/path/to/dir/DB-repo/tmp/ IN_CLOSE_WRITE /path/to/db-to-repo.sh $#  
+where $# - sends filename to script as ${INCRON_FILE_NAME}
+
