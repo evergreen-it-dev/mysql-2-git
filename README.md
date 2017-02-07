@@ -8,7 +8,7 @@
 
 Инструкция и описание на русском: https://habrahabr.ru/post/321342/
 
-Общая схема работы: http://imgh.us/db-2-repo-enc.svg
+Общая схема работы: http://imgh.us/db2repo-server.svg
 
 
 
